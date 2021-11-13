@@ -1,5 +1,6 @@
-from flask import render_template
+from flask import render_template,request,redirect,url_for,abort
 from . import main
+from ..request import get_random_quote
 
 
 
@@ -7,7 +8,11 @@ from . import main
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+
+    quote = get_random_quote('quote')
+    author = get_random_quote('author')
+
+    return render_template('index.html',quote=quote,author=author)
 
 
 @main.route('/about')

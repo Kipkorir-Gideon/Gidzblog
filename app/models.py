@@ -123,3 +123,9 @@ class Dislike(db.Model):
 
   def __repr__(self):
     return f'{self.user_id}:{self.post_id}'
+
+
+class Quote:
+    def __init__(self,author,quote):
+        self.author = author
+        self.quote = quote
