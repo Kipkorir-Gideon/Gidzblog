@@ -20,7 +20,7 @@ class User(UserMixin,db.Model):
     profile_pic_path = db.Column(db.String)
     password_hash = db.Column(db.String(200))
     posts = db.relationship('Post',backref='user',lazy='dynamic')
-    comment = db.relationship('Comments',backref='user',lazy='dynamic')
+    comment = db.relationship('Comment',backref='user',lazy='dynamic')
     like = db.relationship('Like',backref='user',lazy='dynamic')
     dislike = db.relationship('Dislike',backref='user',lazy='dynamic')
 
@@ -45,7 +45,7 @@ class Post(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     content = db.Column(db.String)
     user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
-    comment = db.relationship('Comments',backref='post',lazy = 'dynamic')
+    comment = db.relationship('Comment',backref='post',lazy = 'dynamic')
     like = db.relationship('Like',backref='post',lazy='dynamic')
     dislike = db.relationship('Dislike',backref='post',lazy='dynamic')
 
@@ -63,7 +63,7 @@ class Post(db.Model):
         Post.all_posts.clear()
 
 
-class Comments(db.Model):
+class Comment(db.Model):
     __tablename__ = 'comments'
 
     id = db.Column(db.Integer, primary_key = True)
@@ -78,7 +78,7 @@ class Comments(db.Model):
 
     @classmethod
     def get_comments(self,id):
-        comment = Comments.query.order_by(Comments.time_commented.desc()).filter_by(post_id = id).all()
+        comment = Comment.query.order_by(Comment.time_commented.desc()).filter_by(post_id = id).all()
         return comment
 
     def __repr__(self):
