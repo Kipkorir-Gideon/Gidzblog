@@ -19,7 +19,7 @@ def index():
     return render_template('index.html',quote=quote,posts=posts)
 
 
-@main.route('/create-post/<int:id>', methods=['GET','POST'])
+@main.route('/create-post', methods=['GET','POST'])
 @login_required
 def create_post():
 
@@ -33,7 +33,7 @@ def create_post():
         flash('Post created!', category='success')
         return redirect(url_for('.index'))
 
-    return render_template('posts.html',post_form=form,user=current_user)
+    return render_template('create_post.html',post_form=form,user=current_user)
 
 
 @main.route('/posts')

@@ -44,8 +44,7 @@ class Post(db.Model):
 
     id = db.Column(db.Integer,primary_key = True)
     content = db.Column(db.String)
-    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
-    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     time_created = db.Column(db.DateTime(timezone = True), default = datetime.now)
     comment = db.relationship('Comment',backref='post',lazy = 'dynamic')
     like = db.relationship('Like',backref='post',lazy='dynamic')
@@ -71,8 +70,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     comment = db.Column(db.String(255))
     time_created = db.Column(db.DateTime(timezone = True), default = datetime.now)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
 
     def save_comment(self):
