@@ -1,2 +1,7 @@
 {% extends "base.html" %}
 <title>{% block title %}Home{% endblock %}</title>
+
+{% block content %}  
+<p>{{quote.quote}}</p> 
+<h2>{{quote.author}}</h2> 
+{% endblock %}

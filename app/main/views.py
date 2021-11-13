@@ -9,10 +9,9 @@ from ..request import get_random_quote
 @main.route('/')
 def index():
 
-    quote = get_random_quote('quote')
-    author = get_random_quote('author')
+    quote = get_random_quote()
 
-    return render_template('index.html',quote=quote,author=author)
+    return render_template('index.html',quote=quote)
 
 
 @main.route('/about')

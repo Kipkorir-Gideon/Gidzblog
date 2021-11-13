@@ -2,7 +2,7 @@ import requests
 from .models import Quote
 
 
-api = 'http://quotes.stormconsultancy.co.uk/random.json'
+api = "http://quotes.stormconsultancy.co.uk/random.json"
 
 
 def get_random_quote():

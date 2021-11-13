@@ -68,7 +68,7 @@ class Comment(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     comment = db.Column(db.String(255))
-    time_commented = db.Column(db.DateTime, default = datetime.utcnow)
+    time_commented = db.Column(db.DateTime(timezone = True), default = datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
 
