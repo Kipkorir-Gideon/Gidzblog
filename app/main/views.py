@@ -41,7 +41,7 @@ def create_post():
 def posts(username):
 
     user = User.query.filter_by(username=username).first()
-    if not user:
+    if user is  None:
         flash('Username does not exist!',)
         return redirect('.index')
 
@@ -49,5 +49,19 @@ def posts(username):
     return render_template('posts.html',user=current_user,posts=posts,username=username)
 
 @main.route('/create-comment/<post_id>', methods=['POST'])
-def contact():
-    return render_template('contact.html')
+def create_comment(post_id):
+
+    form = CommentsForm()
+    title = 'Create Comment'
+    posts = Post.query.filter_by(id=post_id).first()
+
+    if posts is None:
+        abort(404)
+
+    if form.validate_on_submit():
+        comment = form.comment.data
+        new_comment = Comment(comment=comment, user_id=current_user.id,post_id=posts.id)
+        new_comment.save_comment()
+        return redirect(url_for('.posts', posts=posts))
+
+    return render_template('create_comment.html',comment_form=form,title=title)
