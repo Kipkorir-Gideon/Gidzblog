@@ -119,3 +119,20 @@ def like_post(id):
     like = Like(user = current_user, post_id=id)
     like.save_likes()
     return redirect(url_for('.posts',id=id))
+
+
+@main.route('/dislike-post<post_id>', methods=['GET','POST'])
+@login_required
+def dislike_post(id):
+    get_posts = Dislike.get_dislikes(id)
+    valid_string = f'{current_user.id}:{id}'
+    for post in get_posts:
+        to_str = f'{post}'
+        print(valid_string+" "+to_str)
+        if valid_string == to_str:
+            return redirect(url_for('.posts',id=id))
+        else:
+            continue
+    dislike = Dislike(user = current_user, post_id=id)
+    dislike.save_dislikes()
+    return redirect(url_for('.posts',id=id))
