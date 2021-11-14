@@ -11,14 +11,6 @@ class PostForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-class CommentsForm(FlaskForm):
-    '''
-    Class to create a wtf form for commenting a pitch
-    '''
-    comment = TextAreaField('Comment')
-    submit = SubmitField('Submit')
-
-
 class UpdateProfile(FlaskForm):
     bio = TextAreaField('Tell us about you.',validators = [Required()])
     submit = SubmitField('Submit')

@@ -1,8 +1,7 @@
-{% extends "base.html" %}
-<title>{% block title %}Home{% endblock %}</title>
-
-{% block content %}  
-<p>{{quote.quote}}</p> 
-<h2>{{quote.author}}</h2> 
-<a class="btn btn-primary text-center text-danger " href="/create-post"> Create Post </a>
+{% extends 'macros.html' as macro %}
+{% block content %}
+<div class="jumbotron">
+    <p>{{quote.quote}}</p> 
+    <h2>{{quote.author}}</h2> 
+</div>
 {% endblock %}

@@ -3,7 +3,7 @@ from flask import render_template,request,flash,redirect,url_for,abort
 from . import main
 from .. import db,photos
 from ..models import User,Post,Comment,Like,Dislike
-from .forms import PostForm,CommentsForm,UpdateProfile
+from .forms import PostForm,UpdateProfile
 from ..request import get_random_quote
 from flask_login import login_required,current_user
 
@@ -23,18 +23,19 @@ def index():
 @main.route('/create-post', methods=['GET','POST'])
 @login_required
 def create_post():
+    if request.method == "POST":
+        content = request.form.get('content')
 
-    form = PostForm()
+        if content is None:
+            abort(404)
 
-    if form.validate_on_submit():
-        content = form.content.data
+        else:
+            post = Post(content=content, user_id=current_user.id)
+            post.save_post()
+            flash('Post created!', category='success')
+            return redirect(url_for('.index'))
 
-        post = Post(content=content, author=current_user.id)
-        post.save_post()
-        flash('Post created!', category='success')
-        return redirect(url_for('.index'))
-
-    return render_template('create_post.html',post_form=form,user=current_user)
+    return render_template('create_post.html',user=current_user)
 
 
 @main.route('/posts/<username>')
@@ -50,23 +51,24 @@ def posts(username):
     return render_template('posts.html',user=current_user,posts=posts,username=username)
 
 
-@main.route('/create-comment/<post_id>', methods=['POST'])
+@main.route('/create-comment/<post_id>', methods=['GET','POST'])
 def create_comment(post_id):
 
-    form = CommentsForm()
+    comment = request.form.get('comment')
     title = 'Create Comment'
-    posts = Post.query.filter_by(id=post_id).first()
 
-    if posts is None:
+    if comment is None:
         abort(404)
 
-    if form.validate_on_submit():
-        comment = form.comment.data
-        new_comment = Comment(comment=comment, user_id=current_user.id,post_id=posts.id)
-        new_comment.save_comment()
-        return redirect(url_for('.posts', posts=posts))
+    else:
+        posts = Post.query.filter_by(id=post_id)
+        if posts:
+                new_comment = Comment(comment=comment, user_id=current_user.id,post_id=post_id)
+                new_comment.save_comment()
 
-    return render_template('create_comment.html',comment_form=form,title=title)
+    return redirect(url_for('.posts'))
+
+    
 
 
 @main.route('/delete-post/<id>')
@@ -105,7 +107,7 @@ def delete_comment(id):
     return redirect(url_for('.index'))
 
 
-@main.route('like-post<post_id>', methods=['GET','POST'])
+@main.route('/like-post<id>', methods=['GET','POST'])
 @login_required
 def like_post(id):
     get_posts = Like.get_likes(id)
@@ -117,12 +119,12 @@ def like_post(id):
             return redirect(url_for('.posts',id=id))
         else:
             continue
-    like = Like(user = current_user, post_id=id)
+    like = Like(user = current_user, id=id)
     like.save_likes()
     return redirect(url_for('.posts',id=id))
 
 
-@main.route('/dislike-post<post_id>', methods=['GET','POST'])
+@main.route('/dislike-post<id>', methods=['GET','POST'])
 @login_required
 def dislike_post(id):
     get_posts = Dislike.get_dislikes(id)
@@ -134,7 +136,7 @@ def dislike_post(id):
             return redirect(url_for('.posts',id=id))
         else:
             continue
-    dislike = Dislike(user = current_user, post_id=id)
+    dislike = Dislike(user = current_user,id=id)
     dislike.save_dislikes()
     return redirect(url_for('.posts',id=id))
 
