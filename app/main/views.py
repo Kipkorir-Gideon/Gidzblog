@@ -36,10 +36,18 @@ def create_post():
     return render_template('create_post.html',post_form=form,user=current_user)
 
 
-@main.route('/posts')
-def posts():
-    return render_template('posts.html')
+@main.route('/posts/<username>')
+@login_required
+def posts(username):
 
-@main.route('/contact')
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        flash('Username does not exist!',)
+        return redirect('.index')
+
+    posts = user.posts
+    return render_template('posts.html',user=current_user,posts=posts,username=username)
+
+@main.route('/create-comment/<post_id>', methods=['POST'])
 def contact():
     return render_template('contact.html')
