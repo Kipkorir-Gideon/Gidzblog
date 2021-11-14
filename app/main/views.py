@@ -1,8 +1,9 @@
 from operator import pos
 from flask import render_template,request,flash,redirect,url_for,abort
 from . import main
+from .. import db,photos
 from ..models import User,Post,Comment,Like,Dislike
-from .forms import PostForm,CommentsForm
+from .forms import PostForm,CommentsForm,UpdateProfile
 from ..request import get_random_quote
 from flask_login import login_required,current_user
 
@@ -136,3 +137,47 @@ def dislike_post(id):
     dislike = Dislike(user = current_user, post_id=id)
     dislike.save_dislikes()
     return redirect(url_for('.posts',id=id))
+
+
+@main.route('/user/<uname>')
+@login_required
+def profile(uname):
+    user = User.query.filter_by(username = uname).first()
+
+    if user is None:
+        abort(404)
+
+    return render_template("profile/profile.html", user = user)
+
+
+@main.route('/user/<uname>/update',methods = ['GET','POST'])
+@login_required
+def update_profile(uname):
+    user = User.query.filter_by(username = uname).first()
+    if user is None:
+        abort(404)
+
+    form = UpdateProfile()
+
+    if form.validate_on_submit():
+
+        user.bio = form.bio.data
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('.profile',uname=user.username))
+
+    return render_template('profile/update.html',form =form)
+
+
+@main.route('/user/<uname>/update/pic',methods= ['POST'])
+@login_required
+def update_pic(uname):
+    user = User.query.filter_by(username = uname).first()
+    if 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        path = f'photos/{filename}'
+        user.profile_pic_path = path
+        db.session.commit()
+    return redirect(url_for('main.profile',uname=uname))
