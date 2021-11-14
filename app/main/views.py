@@ -102,3 +102,20 @@ def delete_comment(id):
         delete_comment()
 
     return redirect(url_for('.index'))
+
+
+@main.route('like-post<post_id>', methods=['GET','POST'])
+@login_required
+def like_post(id):
+    get_posts = Like.get_likes(id)
+    valid_string = f'{current_user.id}:{id}'
+    for post in get_posts:
+        to_str = f'{post}'
+        print(valid_string+" "+to_str)
+        if valid_string == to_str:
+            return redirect(url_for('.posts',id=id))
+        else:
+            continue
+    like = Like(user = current_user, post_id=id)
+    like.save_likes()
+    return redirect(url_for('.posts',id=id))
