@@ -48,6 +48,7 @@ def posts(username):
     posts = user.posts
     return render_template('posts.html',user=current_user,posts=posts,username=username)
 
+
 @main.route('/create-comment/<post_id>', methods=['POST'])
 def create_comment(post_id):
 
@@ -65,3 +66,39 @@ def create_comment(post_id):
         return redirect(url_for('.posts', posts=posts))
 
     return render_template('create_comment.html',comment_form=form,title=title)
+
+
+@main.route('/delete-post/<id>')
+@login_required
+def delete_post(id):
+    post = Post.query.filter_by(id=id).first()
+
+    if post is  None:
+        abort(404)
+
+    elif current_user.id != post.id:
+        flash('You do not have permission to delete this post!')
+
+    else:
+        delete_post()
+        flash('Post deleted successfully!')
+
+    return redirect(url_for('.index'))
+
+
+
+@main.route('/delete-comment/<id>')
+@login_required
+def delete_comment(id):
+    comment = Comment.query.filter_by(id=id).first()
+
+    if comment is None:
+        flash('Comment not found!')
+
+    elif current_user.id != comment.user_id and current_user.id != comment.post.user_id:
+        flash('You are not allowed to delete this comment!')
+
+    else:
+        delete_comment()
+
+    return redirect(url_for('.index'))

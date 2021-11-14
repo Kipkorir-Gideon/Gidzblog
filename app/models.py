@@ -54,14 +54,14 @@ class Post(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete_post(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @classmethod
     def get_posts(cls):
         posts = Post.query.all()
         return posts
-
-    @classmethod
-    def clear_posts(cls):
-        Post.all_posts.clear()
 
 
 class Comment(db.Model):
@@ -75,6 +75,10 @@ class Comment(db.Model):
 
     def save_comment(self):
         db.session.add(self)
+        db.session.commit()
+
+    def delete_comment(self):
+        db.session.remove(self)
         db.session.commit()
 
     @classmethod
