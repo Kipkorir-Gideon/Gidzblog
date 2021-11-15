@@ -5,7 +5,7 @@ This is an application for reading and posting blog posts.
 Ngetich Gideon
 
 ## Description
-This is a flask blog application that shows blog posts from various writers. A blog post can be posted only by the registered writers but everyone can see the available post with their comments. A writer is capable of deleting their post and can deleting comments as well. The page also shows random quotes every time it is refreshed. One can subscribe to the app to receive new posts to their emails.
+This is a flask blog application that shows blog posts from various writers. A blog post can be posted only by the registered writers but everyone can see the available post with their comments. A writer is capable of deleting their post and can delete comments as well. The page also shows random quotes every time it is refreshed. One can subscribe to the app to receive new posts to their emails.
 
 ## Setup Requirements
 * Web Browser
@@ -50,7 +50,7 @@ For any Support or Feedback, fill free to contact the me through:
 
 ## Live site
 
-View live site [here]().
+View live site [here](https://gidzblog.herokuapp.com/).
 
 ## License & copyright
 Licensed under the [MIT License](LICENSE).<br />
