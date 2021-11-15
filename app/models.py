@@ -54,9 +54,6 @@ class Post(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def delete_post(self):
-        db.session.delete(self)
-        db.session.commit()
 
     @classmethod
     def get_posts(cls):
@@ -77,9 +74,6 @@ class Comment(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def delete_comment(self):
-        db.session.remove(self)
-        db.session.commit()
 
     @classmethod
     def get_comments(self,id):
