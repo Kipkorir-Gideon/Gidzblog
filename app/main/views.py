@@ -34,7 +34,7 @@ def create_post():
         post.save_post()
         flash('Post created!', category='success')
         for subscriber in subscribers:
-            mail_message('New Blog Post','email/create_post',subscriber.email,post=post)
+            mail_message('New Blog Post','email/new_post',subscriber.email,post=post)
         return redirect(url_for('.index'))
 
     return render_template('create_post.html',post_form=form,user=current_user)

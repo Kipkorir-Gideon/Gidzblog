@@ -1,69 +1,73 @@
 {% extends 'base.html' %} {% block content %}
-<div class="jumbotron">
-    <p>{{quote.quote}}</p>
-    <h2>{{quote.author}}</h2>
-</div>
-
-<div class="border border-success rounded p-2">
-    <form id="subscribeForm" class="form-inline ml-2" action="{{url_for('main.subscribe')}}" method="POST">
-      <h1 class="text-center">Subscribe</h1>
-      <div class="text-center">
-        <div class="md-form form-group">
-          <input type="email" class="form-control" placeholder="Your email here..." name="subscriber" required>
-        </div>
-        <div class="md-form form-group">
-          <button class="btn btn-success" id="subs">Subscribe</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
-{% for post in posts %}
-<div class="card border-dark">
-    <div class="card-header d-flex justify-content-between align-items-center">
-       <h2>{{post.user.username}}</h2> 
+<div class="container">
+    <div class="jumbotron">
+        <p>{{quote.quote}}</p>
+        <h2>{{quote.author}}</h2>
     </div>
-    <div class="card-body">
-        <div class="card-text">{{post.content}}</div>
-        <div class="likes">
-            <a class="btn text-success" href="{{url_for('.like_post',id=post.id)}}">Like
-                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">{{post.like.count()}}</span>
-            </a>
-
-            <a class="btn text-danger" href="{{url_for('.dislike_post',id=post.id)}}">Dislike
-                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">{{post.dislike.count()}}</span>
-            </a>
-            <div class="card-footer text-muted">{{post.time_created.strftime('%d-%m-%Y')}}</div>
-            {% if current_user.id == post.user_id %}
-            <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete</a>
-            {% endif %}
-            <br />
-            <h3>Comments</h3>
-            {% for comment in post.comment %}
-            <p class="mt-10">
-                <span style="font-weight: bold">{{comment.user.username}}:
-                </span>
-                {{comment.comment}}
-            </p>
-            <small class="text-muted"> {{comment.time_created.strftime('%d-%m-%Y')}}</small>
-            {% if current_user.id == comment.user_id or current_user.id == post.user_id %}
-            <a href="/delete-comment/{{comment.id}}" class="dropdown-item">Delete</a>
-            {% endif %}
-            {% endfor %}
+    
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <a href="/create-post"><button type="button" class="btn btn-success btn-lg">
+                    Create a Post
+                </button></a>
         </div>
-        <form action="{{url_for('.create_comment',post_id=post.id)}}" class="input-group mb-2" method="POST">
-            <input type="text" id="comment" name="comment" placeholder="Write a comment" />
-            <button class="btn btn-primary" type="submit">Comment</button>
-        </form>
+        <div class="col-md-6 border border-success rounded p-2">
+            <form id="subscribeForm" class="form-inline ml-2" action="{{url_for('main.subscribe')}}" method="POST">
+              <h1 class="text-center">Subscribe</h1>
+              <div class="text-center">
+                <div class="md-form form-group">
+                  <input type="email" class="form-control" placeholder="Your email here..." name="subscriber" required>
+                </div>
+                <div class="md-form form-group">
+                  <button class="btn btn-success" id="subs">Subscribe</button>
+                </div>
+              </div>
+            </form>
+          </div>
     </div>
+    
+    {% for post in posts %}
+    <div class="card border-dark">
+        <div class="card-header d-flex justify-content-between align-items-center">
+           <h2>{{post.user.username}}</h2> 
+        </div>
+        <div class="card-body">
+            <div class="card-text">{{post.content}}</div>
+            <div class="likes">
+                <a class="btn text-success" href="{{url_for('.like_post',id=post.id)}}">Like
+                    <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">{{post.like.count()}}</span>
+                </a>
+    
+                <a class="btn text-danger" href="{{url_for('.dislike_post',id=post.id)}}">Dislike
+                    <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">{{post.dislike.count()}}</span>
+                </a>
+                <div class="card-footer text-muted">Posted on: {{post.time_created.strftime('%d-%m-%Y')}}</div>
+                {% if current_user.id == post.user_id %}
+                <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete Post</a>
+                {% endif %}
+                <br />
+                <h3>Comments</h3>
+                {% for comment in post.comment %}
+                <p class="mt-10">
+                    <span style="font-weight: bold">{{comment.user.username}}:
+                    </span>
+                    {{comment.comment}}
+                </p>
+                <small class="text-muted"> {{comment.time_created.strftime('%d-%m-%Y')}}</small>
+                {% if current_user.id == comment.user_id or current_user.id == post.user_id %}
+                <a href="/delete-comment/{{comment.id}}" class="dropdown-item">Delete</a>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <form action="{{url_for('.create_comment',post_id=post.id)}}" class="input-group mb-2" method="POST">
+                <input type="text" id="comment" name="comment" placeholder="Write a comment" />
+                <button class="btn btn-warning" type="submit">Comment</button>
+            </form>
+        </div>
+    </div>
+    <br />
+    
+    <hr />
+    {% endfor %}
+    {% endblock %}
 </div>
-<br />
-
-<hr />
-{% endfor %}
-<div class="center">
-    <a href="/create-post"><button type="button" class="btn btn-primary btn-lg">
-            Create a Post
-        </button></a>
-</div>
-{% endblock %}
