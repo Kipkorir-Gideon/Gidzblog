@@ -23,35 +23,50 @@ def index():
 @main.route('/create-post', methods=['GET','POST'])
 @login_required
 def create_post():
-    if request.method == "POST":
-        content = request.form.get('content')
+    form = PostForm()
 
-        if content is None:
-            abort(404)
+    if form.validate_on_submit():
+        content = form.content.data
 
-        else:
-            post = Post(content=content, user_id=current_user.id)
-            post.save_post()
-            flash('Post created!', category='success')
-            return redirect(url_for('.index'))
+        post = Post(content=content, user_id=current_user.id)
+        post.save_post()
+        flash('Post created!', category='success')
+        return redirect(url_for('.index'))
 
-    return render_template('create_post.html',user=current_user)
+    return render_template('create_post.html',post_form=form,user=current_user)
 
 
 @main.route('/posts/<username>')
 @login_required
-def posts(username):
+def posts(id):
 
-    user = User.query.filter_by(username=username).first()
-    if user is  None:
-        flash('Username does not exist!',)
-        return redirect('.index')
+    post = User.query.get(id)
 
-    posts = user.posts
-    return render_template('posts.html',user=current_user,posts=posts,username=username)
+    comments = Comment.query.filter_by(post_id=id).all()
+    return render_template('posts.html',user=current_user,post=post,comments=comments)
+
+
+@main.route('/post/<post_id>/update',methods=['GET','POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get(post_id)
+    if post.user != current_user:
+        abort(403)
+
+    form = PostForm()
+    if form.validate_on_submit():
+        content = form.content.data
+        db.session.commit()
+        return redirect(url_for('.index',id = post.id))
+    
+    if request.method =='GET':
+        form.content.data = post.content
+
+    return render_template('update_post.html', form = form)
 
 
 @main.route('/create-comment/<post_id>', methods=['GET','POST'])
+@login_required
 def create_comment(post_id):
 
     comment = request.form.get('comment')
@@ -66,7 +81,7 @@ def create_comment(post_id):
                 new_comment = Comment(comment=comment, user_id=current_user.id,post_id=post_id)
                 new_comment.save_comment()
 
-    return redirect(url_for('.posts'))
+    return redirect(url_for('.index'))
 
     
 
@@ -116,12 +131,12 @@ def like_post(id):
         to_str = f'{post}'
         print(valid_string+" "+to_str)
         if valid_string == to_str:
-            return redirect(url_for('.posts',id=id))
+            return redirect(url_for('.index',id=id))
         else:
             continue
-    like = Like(user = current_user, id=id)
+    like = Like(user = current_user, post_id=id)
     like.save_likes()
-    return redirect(url_for('.posts',id=id))
+    return redirect(url_for('.index',id=id))
 
 
 @main.route('/dislike-post<id>', methods=['GET','POST'])
@@ -133,12 +148,12 @@ def dislike_post(id):
         to_str = f'{post}'
         print(valid_string+" "+to_str)
         if valid_string == to_str:
-            return redirect(url_for('.posts',id=id))
+            return redirect(url_for('.index',id=id))
         else:
             continue
-    dislike = Dislike(user = current_user,id=id)
+    dislike = Dislike(user = current_user,post_id=id)
     dislike.save_dislikes()
-    return redirect(url_for('.posts',id=id))
+    return redirect(url_for('.index',id=id))
 
 
 @main.route('/user/<uname>')
