@@ -102,7 +102,8 @@ def delete_post(id):
         flash('You do not have permission to delete this post!')
 
     else:
-        delete_post()
+        db.session.delete(post)
+        db.session.commit()
         flash('Post deleted successfully!')
 
     return redirect(url_for('.index'))
@@ -121,8 +122,8 @@ def delete_comment(id):
         flash('You are not allowed to delete this comment!')
 
     else:
-        delete_comment()
-
+        db.session.delete(comment)
+        db.session.commit()
     return redirect(url_for('.index'))
 
 

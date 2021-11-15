@@ -2,12 +2,13 @@ import requests
 from .models import Quote
 
 
-api = "http://quotes.stormconsultancy.co.uk/random.json"
+# api = "http://quotes.stormconsultancy.co.uk/random.json"
 
 
 def get_random_quote():
-    random_quote = requests.get(api).json()
+    # random_quote = requests.get(api).json()
 
-    quote = Quote(random_quote.get('author'), random_quote.get('quote'))
+    # quote = Quote(random_quote.get('author'), random_quote.get('quote'))
 
-    return quote
+    # return quote
+    pass

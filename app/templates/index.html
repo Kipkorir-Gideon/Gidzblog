@@ -33,14 +33,22 @@
             <a class="btn text-danger" href="{{url_for('.dislike_post',id=post.id)}}">Dislike
                 <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">{{post.dislike.count()}}</span>
             </a>
+            <div class="card-footer text-muted">{{post.time_created.strftime('%d-%m-%Y')}}</div>
+            {% if current_user.id == post.user_id %}
+            <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete</a>
+            {% endif %}
             <br />
+            <h3>Comments</h3>
             {% for comment in post.comment %}
             <p class="mt-10">
                 <span style="font-weight: bold">{{comment.user.username}}:
                 </span>
                 {{comment.comment}}
             </p>
-            <small class="text-muted"> {{comment.time_created}}</small>
+            <small class="text-muted"> {{comment.time_created.strftime('%d-%m-%Y')}}</small>
+            {% if current_user.id == comment.user_id or current_user.id == post.user_id %}
+            <a href="/delete-comment/{{comment.id}}" class="dropdown-item">Delete</a>
+            {% endif %}
             {% endfor %}
         </div>
         <form action="{{url_for('.create_comment',post_id=post.id)}}" class="input-group mb-2" method="POST">
@@ -48,7 +56,6 @@
             <button class="btn btn-primary" type="submit">Comment</button>
         </form>
     </div>
-    <div class="card-footer text-muted">{{post.time_created}}</div>
 </div>
 <br />
 
