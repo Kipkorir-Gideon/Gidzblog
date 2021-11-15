@@ -16,7 +16,7 @@ from ..email import mail_message
 def index():
 
     quote = get_random_quote()
-    posts = Post.query.all()
+    posts = Post.query.order_by(Post.time_created.desc())
 
     return render_template('index.html',quote=quote,posts=posts)
 
@@ -28,9 +28,10 @@ def create_post():
     subscribers = Subscriber.query.all()
 
     if form.validate_on_submit():
+        title = form.title.data
         content = form.content.data
 
-        post = Post(content=content, user_id=current_user.id)
+        post = Post(content=content, title=title, user_id=current_user.id)
         post.save_post()
         flash('Post created!', category='success')
         for subscriber in subscribers:
