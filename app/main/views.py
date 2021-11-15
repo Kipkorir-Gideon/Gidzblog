@@ -2,10 +2,11 @@ from operator import pos
 from flask import render_template,request,flash,redirect,url_for,abort
 from . import main
 from .. import db,photos
-from ..models import User,Post,Comment,Like,Dislike
+from ..models import User,Post,Comment,Like,Dislike,Subscriber
 from .forms import PostForm,UpdateProfile
 from ..request import get_random_quote
 from flask_login import login_required,current_user
+from ..email import mail_message
 
 
 
@@ -24,6 +25,7 @@ def index():
 @login_required
 def create_post():
     form = PostForm()
+    subscribers = Subscriber.query.all()
 
     if form.validate_on_submit():
         content = form.content.data
@@ -31,6 +33,8 @@ def create_post():
         post = Post(content=content, user_id=current_user.id)
         post.save_post()
         flash('Post created!', category='success')
+        for subscriber in subscribers:
+            mail_message('New Blog Post','email/create_post',subscriber.email,post=post)
         return redirect(url_for('.index'))
 
     return render_template('create_post.html',post_form=form,user=current_user)
@@ -118,6 +122,16 @@ def delete_comment(id):
 
     else:
         delete_comment()
+
+    return redirect(url_for('.index'))
+
+
+@main.route('/subscribe',methods=['GET','POST'])
+def subscribe():
+    email = request.form.get('subscriber')
+    new_subscription = Subscriber(email=email)
+    new_subscription.save_subscribers()
+
 
     return redirect(url_for('.index'))
 
