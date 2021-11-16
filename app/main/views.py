@@ -60,11 +60,13 @@ def update_post(post_id):
 
     form = PostForm()
     if form.validate_on_submit():
-        content = form.content.data
+        post.title = form.title.data
+        post.content = form.content.data
         db.session.commit()
         return redirect(url_for('.index',id = post.id))
     
     if request.method =='GET':
+        form.title.data = post.title
         form.content.data = post.content
 
     return render_template('update_post.html', form = form)

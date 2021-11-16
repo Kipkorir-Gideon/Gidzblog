@@ -62,6 +62,7 @@
                              </a>
                              <div class="text-muted">Posted on: {{post.time_created.strftime('%d-%m-%Y')}}</div>
                              {% if current_user.id == post.user_id %}
+                             <a class="btn btn-info btn-sm mx-2" href="{{url_for('.update_post',post_id = post.id)}}">Edit Post</a>
                              <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete Post</a>
                              {% endif %}
                              <br />
